@@ -789,7 +789,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="flex flex-wrap gap-4"
           >
-            <a href="#skills" className="btn-glow font-mono text-sm px-6 py-3 rounded-xl border font-medium"
+            <a href="#projects" className="btn-glow font-mono text-sm px-6 py-3 rounded-xl border font-medium"
               style={{ background: 'var(--accent)', borderColor: 'var(--accent)', color: '#fff', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}>
               View Projects
             </a>
