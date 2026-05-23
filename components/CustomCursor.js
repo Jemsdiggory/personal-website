@@ -1,13 +1,25 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 
 export default function CustomCursor() {
   const cursorDotRef = useRef(null)
   const cursorRingRef = useRef(null)
+  const [isDesktop, setIsDesktop] = useState(true)
 
   useEffect(() => {
+    // Check if desktop on mount
+    const checkDesktop = () => setIsDesktop(window.innerWidth > 768)
+    checkDesktop()
+    
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
+
+  useEffect(() => {
+    if (!isDesktop) return
+
     const dot = cursorDotRef.current
     const ring = cursorRingRef.current
 
@@ -75,9 +87,9 @@ export default function CustomCursor() {
         el.removeEventListener('mouseleave', handleMouseLeave)
       })
     }
-  }, [])
+  }, [isDesktop])
 
-  return (
+  return isDesktop ? (
     <>
       {/* Small dot — instant follow */}
       <div
@@ -93,5 +105,5 @@ export default function CustomCursor() {
         style={{ borderColor: 'var(--color-accent)' }}
       />
     </>
-  )
+  ) : null
 }
