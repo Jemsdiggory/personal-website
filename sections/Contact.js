@@ -203,7 +203,7 @@ export default function Contact() {
 
         {/* Email CTA */}
         <motion.a
-          href="mailto:youremail@gmail.com" // ← ganti
+          href="mailto:jemimadiggory@gmail.com" 
           className="btn-glow"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
