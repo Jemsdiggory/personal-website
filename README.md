@@ -1,4 +1,4 @@
-# Portfolio Website
+# Personal Website
 
 Modern, interactive portfolio website built with Next.js featuring smooth animations, custom cursor, music player, and responsive design.
 
