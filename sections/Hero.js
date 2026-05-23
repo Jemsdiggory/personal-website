@@ -605,6 +605,88 @@ function GamepadCard() {
   )
 }
 
+// stat card with scroll-triggered count-up animation
+function StatCard({ stat, index, containerRef }) {
+  const cardRef = useRef(null)
+  const numberRef = useRef(null)
+  const [displayValue, setDisplayValue] = useState(0)
+  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' && window.innerWidth > 768)
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (!isDesktop || !cardRef.current || !numberRef.current) return
+
+    const numericValue = parseInt(stat.value) || 0
+    
+    gsap.registerPlugin(ScrollTrigger)
+    
+    const ctx = gsap.context(() => {
+      // Entrance animation
+      gsap.from(cardRef.current, {
+        scrollTrigger: {
+          trigger: containerRef?.current || cardRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+          once: true,
+        },
+        opacity: 0,
+        x: index % 2 === 0 ? -30 : 30,
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: 'power2.out',
+      })
+
+      // Counter animation
+      gsap.to(numberRef.current, {
+        scrollTrigger: {
+          trigger: containerRef?.current || cardRef.current,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+          once: true,
+        },
+        textContent: numericValue,
+        duration: 1.2,
+        delay: index * 0.1 + 0.2,
+        ease: 'power2.out',
+        snap: { textContent: 1 },
+        onUpdate: function() {
+          const currentValue = Math.floor(parseFloat(this.targets()[0].textContent))
+          setDisplayValue(currentValue)
+        },
+      })
+    })
+
+    return () => ctx.revert()
+  }, [isDesktop, stat, index, containerRef])
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className="flex flex-col cursor-default"
+      initial={!isDesktop ? { opacity: 1, x: 0 } : {}}
+    >
+      <span className="font-display font-extrabold text-3xl" style={{ color: 'var(--accent)' }}>
+        {isDesktop ? (
+          <>
+            <span ref={numberRef}>{displayValue}</span>
+            {stat.value.replace(/^\d+/, '')}
+          </>
+        ) : (
+          stat.value
+        )}
+      </span>
+      <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+        {stat.label}
+      </span>
+    </motion.div>
+  )
+}
+
 // Main Hero export 
 
 export default function Hero() {
@@ -728,18 +810,7 @@ export default function Hero() {
             className="flex flex-wrap gap-8 mt-12"
           >
             {statItems.map((s, idx) => (
-              <motion.div key={s.label}
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.85 + idx * 0.08 }}
-                className="flex flex-col cursor-default"
-              >
-                <span className="font-display font-extrabold text-3xl" style={{ color: 'var(--accent)' }}>
-                  {s.value}
-                </span>
-                <span className="font-mono text-xs uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                  {s.label}
-                </span>
-              </motion.div>
+              <StatCard key={s.label} stat={s} index={idx} containerRef={sectionRef} />
             ))}
           </motion.div>
         </div>
