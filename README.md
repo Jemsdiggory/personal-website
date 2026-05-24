@@ -1,6 +1,6 @@
 # Personal Website
 
-Modern, interactive portfolio website built with Next.js featuring smooth animations, custom cursor, music player, and responsive design.
+Interactive portfolio website built with Next.js featuring smooth animations, custom cursor, music player, and responsive design for Cretivox Internship Experience endurance test.
 
 ## 🎯 Features
 
